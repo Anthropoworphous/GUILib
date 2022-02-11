@@ -1,0 +1,9 @@
+name: GUILib
+version: '${project.version}'
+main: com.github.anthropoworphous.guilib.GUILib
+api-version: 1.17
+prefix: GL
+load: STARTUP
+authors: [ Anthropoworphous ]
+description: gui library
+website: https://github.com/anthropoworphous
