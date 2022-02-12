@@ -1,4 +1,4 @@
-package com.github.anthropoworphous.guilib.io;
+package com.github.anthropoworphous.guilib.window.io;
 
 import com.github.anthropoworphous.guilib.util.ID;
 import com.github.anthropoworphous.guilib.window.pane.Pane;
@@ -14,8 +14,7 @@ public class PaneJsonConverter {
         location = p.getLocation();
         height = p.getHeight();
         width = p.getWidth();
-
-        paneItems = new PaneItemCollectionJsonConverter(p.getValue(PaneItemCollection.class));
+        paneItems = p.getValue(PaneItemCollection.class);
 
         if (!p.isChildless()) {
             Objects.requireNonNull(p.getChild())
@@ -28,12 +27,11 @@ public class PaneJsonConverter {
     private final int height;
     private final String name;
     private final List<PaneJsonConverter> child = new ArrayList<>();
-
-    private final PaneItemCollectionJsonConverter paneItems;
+    private final PaneItemCollection paneItems;
 
     public Pane fromJson() {
         Pane result = new Pane(location, width, height, name);
-        result.setValue(paneItems.fromJson());
+        result.setValue(paneItems);
         child.forEach(c -> result.adopt(c.fromJson()));
         return result;
     }

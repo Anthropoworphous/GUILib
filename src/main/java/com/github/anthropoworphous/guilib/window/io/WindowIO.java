@@ -1,4 +1,4 @@
-package com.github.anthropoworphous.guilib.io;
+package com.github.anthropoworphous.guilib.window.io;
 
 import com.github.anthropoworphous.guilib.GUILib;
 import com.github.anthropoworphous.guilib.window.Window;
