@@ -81,11 +81,12 @@ public class Pane extends Connected implements Localised {
     }
 
     private ID unoffset(ID id) {
+        ID out = new ID(id.getID());
         this.parentsWork(p -> {
             Pane parent = (Pane) p;
-            id.move(parent.location.getID() + ((id.getID() / width) * (parent.width - width)));
+            out.move(parent.location.getID() + ((id.getID() / width) * (parent.width - width)));
         });
-        return id;
+        return out;
     }
 
     private Map<ID, GUIItem> unoffsettedContent() {

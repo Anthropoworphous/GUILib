@@ -37,13 +37,17 @@ public class Window implements Listener {
         return mainPane;
     }
     public InventoryBuilder getInventoryBuilder() { return builder; }
+
     protected static Map<UUID, Map.Entry<Window, Inventory>> getActiveGUI() {
         return activeGUI;
     }
-    public WindowSlot get(int id) {
+    protected Map<ID, WindowSlot> getGuiItemReferences() { return guiItemReferences; }
+    protected WindowSlot get(int id) {
         return guiItemReferences.get(new ID(id));
     }
-    protected Map<ID, WindowSlot> getGuiItemReferences() { return guiItemReferences; }
+    protected void clearGuiItemReferences() {
+        guiItemReferences.clear();
+    }
 
     /**
      * create an inventory and populate it using the mainPane
