@@ -33,7 +33,6 @@ public class WindowIO {
         try {
             Reader reader = Files.newBufferedReader(Path.of(WindowIO.path + File.separator + nameOfWindow + ".json"));
             Window win = new Gson().fromJson(reader, WindowJsonConverter.class).fromJson();
-            //Connected.reconnect(win.getMainPane());
             reader.close();
             return win;
         } catch (Exception e) {
