@@ -19,9 +19,10 @@ public class WindowIO {
     public static void exportToPluginFolderInJson(Window window) {
         try {
             Path path = Path.of(WindowIO.path);
+            //noinspection ResultOfMethodCallIgnored
             path.toFile().mkdirs();
             Writer writer = Files.newBufferedWriter(Paths.get(path.toString(), window.getName() + ".json"));
-            new GsonBuilder().setPrettyPrinting().serializeNulls().create().toJson(window, writer);
+            new GsonBuilder().setPrettyPrinting().serializeNulls().create().toJson(new WindowJsonConverter(window), writer);
             writer.flush();
             writer.close();
         } catch (Exception e) {
@@ -32,9 +33,9 @@ public class WindowIO {
     public static Window importFromPluginFolderInJson(String nameOfWindow) {
         try {
             Reader reader = Files.newBufferedReader(Path.of(WindowIO.path + File.separator + nameOfWindow + ".json"));
-            Window win = new Gson().fromJson(reader, Window.class);
-            reader.close();
+            Window win = new Gson().fromJson(reader, WindowJsonConverter.class).fromJson();
             Connected.reconnect(win.getMainPane());
+            reader.close();
             return win;
         } catch (Exception e) {
             e.printStackTrace();

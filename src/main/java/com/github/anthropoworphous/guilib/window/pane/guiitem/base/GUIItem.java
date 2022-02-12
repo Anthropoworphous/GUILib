@@ -36,9 +36,9 @@ public class GUIItem {
     private ItemStack foreGroundItem, backGroundItem = null;
 
     protected void foreGroundItem(ItemStack item) { foreGroundItem = item; }
-    protected ItemStack foreGroundItem() { return foreGroundItem; }
+    public ItemStack foreGroundItem() { return foreGroundItem; }
     protected void backGroundItem(ItemStack item) { backGroundItem = item; }
-    protected ItemStack backGroundItem() { return backGroundItem; }
+    public ItemStack backGroundItem() { return backGroundItem; }
 
     public ItemStack getDisplayItem() {
         return (foreGroundItem == null || foreGroundItem.getType().isAir()) ? backGroundItem : foreGroundItem;

@@ -1,16 +1,28 @@
 package com.github.anthropoworphous.guilib.window.inventory;
 
 import main.structure.tree.IConnectable;
+import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
 import java.util.Arrays;
 
-public abstract class InventoryBuilder implements IConnectable {
-    public InventoryBuilder() {
-        inventory = build();
-        if (Arrays.stream(SUPPORTED_INVENTORY_TYPES).noneMatch(t -> t == inventory.getType())) {
-            throw new IllegalStateException("Unsupported inventory type");
+public class InventoryBuilder implements IConnectable {
+    public InventoryBuilder(InventoryType invType) {
+        this.invType = invType;
+        if (Arrays.stream(SUPPORTED_INVENTORY_TYPES).noneMatch(t -> t == invType)) {
+            throw new IllegalArgumentException("Unsupported inventory type");
+        }
+    }
+    public InventoryBuilder(int size) {
+        if (size % 9 != 0) {
+            if (size <= 6) {
+                this.size = size * 9;
+            } else {
+                throw new IllegalArgumentException("Size is not multiple of 9");
+            }
+        } else {
+            this.size = size;
         }
     }
 
@@ -27,13 +39,16 @@ public abstract class InventoryBuilder implements IConnectable {
             InventoryType.CRAFTING
     };
 
-    private final Inventory inventory;
+    private InventoryType invType = InventoryType.CHEST;
+    private int size = 27;
 
     public Inventory getInventory() {
-        return inventory;
+        return invType == InventoryType.CHEST ?
+                Bukkit.getServer().createInventory(null, size) :
+                Bukkit.getServer().createInventory(null, invType);
     }
     public int getWidth() {
-        return switch (inventory.getType()) {
+        return switch (getInventory().getType()) {
             case CHEST, PLAYER, ENDER_CHEST, SHULKER_BOX, BARREL -> 9;
             case HOPPER -> 5;
             case DISPENSER, WORKBENCH, DROPPER -> 3;
@@ -42,14 +57,12 @@ public abstract class InventoryBuilder implements IConnectable {
         };
     }
     public int getHeight() {
-        return switch (inventory.getType()) {
-            case CHEST -> inventory.getSize() / 9;
+        return switch (getInventory().getType()) {
+            case CHEST -> getInventory().getSize() / 9;
             case PLAYER, ENDER_CHEST, SHULKER_BOX, BARREL, DISPENSER, WORKBENCH, DROPPER -> 3;
             case CRAFTING -> 2;
             case HOPPER -> 1;
             default -> throw new IllegalStateException("Unsupported inventory type");
         };
     }
-
-    public abstract Inventory build();
 }

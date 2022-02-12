@@ -13,6 +13,11 @@ public class PaneItemCollection extends ArrayList<Map<ID, GUIItem>> implements I
     public PaneItemCollection() {
         add(new HashMap<>());
     }
+    public PaneItemCollection(int pageLimit) {
+        for (int i = pageLimit; i > 0; i--) {
+            add(new HashMap<>());
+        }
+    }
 
     private int pageNumber = 1;
 
@@ -62,7 +67,6 @@ public class PaneItemCollection extends ArrayList<Map<ID, GUIItem>> implements I
     }
     @Override public int currentPage() { return pageNumber; }
     //end
-
 
     @Override
     public String toString() {

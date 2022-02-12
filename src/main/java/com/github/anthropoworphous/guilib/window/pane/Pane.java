@@ -23,13 +23,26 @@ public class Pane extends Connected implements Localised {
         this.name = name;
     }
 
+    //field - don't forget about the connected value
     private int width, height;
     private final ID location;
     private final String name;
+    //end
 
+    //getter
     public String getName() {
         return name;
     }
+    public int getWidth() {
+        return width;
+    }
+    public int getHeight() {
+        return height;
+    }
+    public ID getLocation() {
+        return location;
+    }
+    //end
 
     //set up
     public Pane addItem(ID id, GUIItem item) {
@@ -61,7 +74,8 @@ public class Pane extends Connected implements Localised {
                     "Pane out of bound, Pane in layer " + this.getGeneration() +
                             " require at least " + shiftedWidth + "x" + shiftedHeight +
                             " slot, but Pane's parent in layer " + parent.getGeneration() +
-                            " is only " + ((Pane) parent).width + "wide"
+                            " is only " + ((Pane) parent).width + "wide" +
+                            "\"No!~ It won't fit ahhHHHunnmmhhhaaaa~"
             );
         }
     }
@@ -76,34 +90,27 @@ public class Pane extends Connected implements Localised {
 
     private Map<ID, GUIItem> unoffsettedContent() {
         Map<ID, GUIItem> out = new HashMap<>();
-        System.out.println(name + " || Pane's page's items size: " + getValue(PaneItemCollection.class).get().size());
         getValue(PaneItemCollection.class).get().forEach(
                 (id, item) -> out.put(unoffset(id), item)
         );
         return out;
     }
 
-    //TODO set to private after testing
-    public Map<ID, WindowSlot> map() {
+    private Map<ID, WindowSlot> map() {
         Map<ID, WindowSlot> result = new HashMap<>();
 
-        //TODO INF LOOP W T F
-        this.toLayer().forEach(l -> {
-            l.forEach(p -> System.out.println(name + " || " + p.toString()));
-            l.forEach(p -> ((Pane) p).unoffsettedContent().forEach((id, item) -> {
+        this.toLayer().forEach(l -> l.forEach(p -> ((Pane) p).unoffsettedContent().forEach((id, item) -> {
+            WindowSlot slot = new WindowSlot((Pane) p, new HashMap<>());
 
-                WindowSlot slot = new WindowSlot((Pane) p, new HashMap<>());
+            if (slot.items().put(id.getID(), item) != null) {
+                slot.items().put(id.getID(), new ErrorGUIItem("GUIItem Collision", List.of(
+                        Component.text().append(Component.text("At depth: " + this.getGeneration())).build(),
+                        Component.text().append(Component.text("At slot: " + id)).build()
+                )));
+            }
 
-                if (slot.items().put(id.getID(), item) != null) {
-                    slot.items().put(id.getID(), new ErrorGUIItem("GUIItem Collision", List.of(
-                            Component.text().append(Component.text("At depth: " + this.getGeneration())).build(),
-                            Component.text().append(Component.text("At slot: " + id)).build()
-                    )));
-                }
-
-                result.put(id, slot);
-            }));
-        });
+            result.put(id, slot);
+        })));
 
         return result;
     }
