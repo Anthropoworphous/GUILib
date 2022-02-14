@@ -1,8 +1,8 @@
 package com.github.anthropoworphous.guilib.window.io;
 
-import com.github.anthropoworphous.guilib.util.ID;
 import com.github.anthropoworphous.guilib.window.pane.Pane;
 import com.github.anthropoworphous.guilib.window.pane.PaneItemCollection;
+import main.index.ID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Objects;
 public class PaneJsonConverter {
     public PaneJsonConverter(Pane p) {
         name = p.getName();
-        location = p.getLocation();
+        location = new ID(p.getLocation());
         height = p.getHeight();
         width = p.getWidth();
         paneItems = p.getValue(PaneItemCollection.class);

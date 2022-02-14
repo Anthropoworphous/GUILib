@@ -1,15 +1,15 @@
 package com.github.anthropoworphous.guilib.window.pane;
 
 import com.github.anthropoworphous.guilib.interfaces.Paginated;
-import com.github.anthropoworphous.guilib.util.ID;
 import com.github.anthropoworphous.guilib.window.pane.guiitem.base.GUIItem;
+import main.index.Index;
 import main.structure.tree.IConnectable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PaneItemCollection extends ArrayList<Map<ID, GUIItem>> implements IConnectable, Paginated {
+public class PaneItemCollection extends ArrayList<Map<Index, GUIItem>> implements IConnectable, Paginated {
     public PaneItemCollection() {
         add(new HashMap<>());
     }
@@ -27,7 +27,7 @@ public class PaneItemCollection extends ArrayList<Map<ID, GUIItem>> implements I
      * @param position where to put the item
      * @return previous value at the position if it's not null, return null otherwise
      */
-    public GUIItem addItem(GUIItem item, ID position) {
+    public GUIItem addItem(GUIItem item, Index position) {
         return get(pageNumber).put(position, item);
     }
     /**
@@ -37,16 +37,16 @@ public class PaneItemCollection extends ArrayList<Map<ID, GUIItem>> implements I
      * @param page which page the item is in
      * @return previous value at the position if it's not null, return null otherwise
      */
-    public GUIItem addItem(GUIItem item, ID position, int page) {
+    public GUIItem addItem(GUIItem item, Index position, int page) {
         return get(page).put(position, item);
     }
 
     @Override
-    public Map<ID, GUIItem> get(int pageNumber) {
+    public Map<Index, GUIItem> get(int pageNumber) {
         return (pageNumber > size()) ? null : super.get(pageNumber - 1);
     }
 
-    public Map<ID, GUIItem> get() {
+    public Map<Index, GUIItem> get() {
         return super.get(pageNumber - 1);
     }
 

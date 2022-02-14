@@ -10,8 +10,8 @@ import java.util.Map;
 public class Pattern {
     private final Map<Integer, GUIItem> defined = new HashMap<>();
 
-    public Pattern define(int id, @Nullable GUIItem item) {
-        defined.put(id, item);
+    public Pattern define(int index, @Nullable GUIItem item) {
+        defined.put(index, item);
         return this;
     }
 
@@ -29,10 +29,10 @@ public class Pattern {
         private final Map<Integer, Map<Integer, GUIItem>> items = new HashMap<>();
         private int pointerX, pointerY, width = 0;
 
-        public PatternBuilder next(int id) {
-            if (defined.get(id) != null) {
+        public PatternBuilder next(int index) {
+            if (defined.get(index) != null) {
                 items.computeIfAbsent(pointerY, k -> new HashMap<>());
-                items.get(pointerY).put(pointerX, defined.get(id));
+                items.get(pointerY).put(pointerX, defined.get(index).copy());
             }
             pointerX++;
             return this;

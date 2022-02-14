@@ -12,6 +12,10 @@ public class WindowListener implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         Player p = (Player) event.getWhoClicked();
 
+        if (!Window.getActiveGUI().containsKey(p.getUniqueId())) {
+            return;
+        }
+
         Window window = Window.getActiveGUI().get(p.getUniqueId()).getKey();
         Inventory inv = Window.getActiveGUI().get(p.getUniqueId()).getValue();
 
@@ -21,7 +25,7 @@ public class WindowListener implements Listener {
             WindowSlot slot = window.get(event.getSlot());
 
             if (slot != null) {
-                slot.get().onClick(window, slot, slot.pane(), event);
+                slot.getGUIItem().onClick(window, slot, slot.pane(), event);
             }
         }
     }
@@ -34,7 +38,7 @@ public class WindowListener implements Listener {
             Window window = Window.getActiveGUI().get(p.getUniqueId()).getKey();
 
             window.getGuiItemReferences().forEach(
-                    (doNotCare, item) -> item.get().onClose(window, item, item.pane(), event)
+                    (doNotCare, item) -> item.getGUIItem().onClose(window, item, item.pane(), event)
             );
         }
     }

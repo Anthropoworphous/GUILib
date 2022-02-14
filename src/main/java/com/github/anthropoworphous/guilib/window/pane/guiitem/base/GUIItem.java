@@ -19,7 +19,6 @@ public class GUIItem {
     public GUIItem(ItemStack item) {
         backGroundItem = item;
     }
-    public GUIItem() {}
 
     protected ItemStack buildItemStack(Material material, int amount, Component name, List<Component> lore) {
         ItemStack item = new ItemStack(material, amount);
@@ -33,7 +32,7 @@ public class GUIItem {
         return item;
     }
 
-    private ItemStack foreGroundItem, backGroundItem = null;
+    private ItemStack foreGroundItem, backGroundItem;
 
     protected void foreGroundItem(ItemStack item) { foreGroundItem = item; }
     public ItemStack foreGroundItem() { return foreGroundItem; }
@@ -47,6 +46,17 @@ public class GUIItem {
     @Override
     public String toString() {
         return getDisplayItem().getType().toString();
+    }
+
+    public GUIItem copy() {
+        GUIItem item = new GUIItem(null);
+        if (backGroundItem != null) {
+            item.backGroundItem = backGroundItem.clone();
+        }
+        if (foreGroundItem != null) {
+            item.foreGroundItem = foreGroundItem.clone();
+        }
+        return item;
     }
 
     public void onClick(Window clickedWindow, WindowSlot slot, Pane pane, InventoryClickEvent event) {}

@@ -1,8 +1,9 @@
 package com.github.anthropoworphous.guilib.window;
 
-import com.github.anthropoworphous.guilib.util.ID;
 import com.github.anthropoworphous.guilib.window.inventory.InventoryBuilder;
 import com.github.anthropoworphous.guilib.window.pane.Pane;
+import main.index.ID;
+import main.index.Index;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
@@ -28,7 +29,7 @@ public class Window implements Listener {
     private final String name;
 
     private static final Map<UUID, Map.Entry<Window, Inventory>> activeGUI = new HashMap<>();
-    private Map<ID, WindowSlot> guiItemReferences;
+    private Map<Index, WindowSlot> guiItemReferences;
 
     public String getName() {
         return name;
@@ -41,9 +42,9 @@ public class Window implements Listener {
     protected static Map<UUID, Map.Entry<Window, Inventory>> getActiveGUI() {
         return activeGUI;
     }
-    protected Map<ID, WindowSlot> getGuiItemReferences() { return guiItemReferences; }
-    protected WindowSlot get(int id) {
-        return guiItemReferences.get(new ID(id));
+    protected Map<Index, WindowSlot> getGuiItemReferences() { return guiItemReferences; }
+    protected WindowSlot get(int index) {
+        return guiItemReferences.get(new ID(index));
     }
     protected void clearGuiItemReferences() {
         guiItemReferences.clear();

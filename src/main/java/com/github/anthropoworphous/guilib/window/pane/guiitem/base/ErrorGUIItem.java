@@ -35,8 +35,8 @@ public class ErrorGUIItem extends GUIItem {
         print.append(Component.text("Environment:"))
                 .append(Component.text("\tWindow: " + clickedWindow.getName()))
                 .append(Component.text("\tClick: " + event.getClick()))
-                .append(Component.text("\tSlot ID: " + event.getSlot()))
-                .append(Component.text("\tRaw slot ID: " + event.getRawSlot()));
+                .append(Component.text("\tSlot Index: " + event.getSlot()))
+                .append(Component.text("\tRaw slot Index: " + event.getRawSlot()));
 
         event.getWhoClicked().sendMessage(print.build());
     }

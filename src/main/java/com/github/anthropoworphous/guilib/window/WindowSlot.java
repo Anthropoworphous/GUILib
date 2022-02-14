@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public record WindowSlot(Pane pane, Map<Integer, GUIItem> items) {
-    public GUIItem get() {
+    public GUIItem getGUIItem() {
         Optional<Integer> maxKey = items.keySet().stream().max(Comparator.naturalOrder());
         return maxKey.map(items::get).orElse(null);
     }
