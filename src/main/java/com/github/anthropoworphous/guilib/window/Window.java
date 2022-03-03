@@ -15,7 +15,7 @@ import java.util.UUID;
 
 /**
  * Hold the actual inventory and main pane
- * Doesn't need to recreate every time, the show() method create new GUI, create once an cache it
+ * Doesn't need to recreate every time, the show() method create new GUI, create once and cache it
  */
 public class Window implements Listener {
     public Window(InventoryBuilder builder, Pane pane, String name) {
