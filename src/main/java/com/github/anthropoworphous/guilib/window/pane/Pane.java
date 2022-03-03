@@ -154,16 +154,16 @@ public class Pane extends Connected {
         toLayer().forEach(layer ->
                 layer.forEach(pane ->
                         ((Pane) pane).unoffsettedContent(inv, requestingWindow).forEach((id, item) -> {
-                                WindowSlot slot = new WindowSlot((Pane) pane, new HashMap<>());
+                            result.computeIfAbsent(id, i -> new WindowSlot((Pane) pane, new HashMap<>()));
+                            WindowSlot slot = result.get(id);
 
-                                //TODO debug this
-                                if (slot.items().put(id.toIndex(), item) != null) {
-                                    slot.items().put(id.toIndex(), new ErrorGUIItem("GUIItem Collision", List.of(
-                                            Component.text().append(Component.text("At depth: " + this.getGeneration())).build(),
-                                            Component.text().append(Component.text("At slot: " + id.toIndex())).build()
-                                    )));
-                                }
-                                result.put(new ID(id.toIndex()), slot);
+                            if (slot.items().put(id.toIndex(), item) != null) {
+                                slot.items().put(id.toIndex(), new ErrorGUIItem("GUIItem Collision", List.of(
+                                        Component.text().append(Component.text("At depth: " + this.getGeneration())).build(),
+                                        Component.text().append(Component.text("At slot: " + id.toIndex())).build()
+                                )));
+                            }
+                            result.put(new ID(id.toIndex()), slot);
                         })
                 )
         );
