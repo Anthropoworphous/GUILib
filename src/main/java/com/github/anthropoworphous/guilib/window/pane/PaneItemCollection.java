@@ -1,71 +1,80 @@
 package com.github.anthropoworphous.guilib.window.pane;
 
-import com.github.anthropoworphous.guilib.interfaces.Paginated;
-import com.github.anthropoworphous.guilib.window.pane.guiitem.base.GUIItem;
+import com.github.anthropoworphous.guilib.window.pane.guiitem.GUIItem;
 import main.index.Index;
 import main.structure.tree.IConnectable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-public class PaneItemCollection extends ArrayList<Map<Index, GUIItem>> implements IConnectable, Paginated {
-    public PaneItemCollection() {
-        add(new HashMap<>());
-    }
+public class PaneItemCollection implements IConnectable {
+    public PaneItemCollection() {}
     public PaneItemCollection(int pageLimit) {
-        for (int i = pageLimit; i > 0; i--) {
-            add(new HashMap<>());
+        this.pageLimit = pageLimit;
+    }
+
+    private int pageNumber = 0;
+    private int pageLimit = 1;
+    private final Map<Integer, Map<Index, GUIItem>> content = new HashMap<>();
+
+    //getter
+    public List<Map<Index, GUIItem>> content() {
+        int max = content.keySet().stream().max(Comparator.comparingInt(x -> x)).orElse(0);
+        List<Map<Index, GUIItem>> result = new ArrayList<>(max);
+        content.forEach(result::set);
+        return result;
+    }
+    //end
+
+    private void mkdir(int targetPage) {
+        if (content.size() < pageLimit) {
+            content.computeIfAbsent(targetPage, ignore -> new HashMap<>());
         }
     }
 
-    private int pageNumber = 1;
+    public Map<Index, GUIItem> get(int pageNumber) {
+        mkdir(pageNumber);
+        return content.get(pageNumber);
+    }
+    public Map<Index, GUIItem> get() {
+        return get(pageNumber);
+    }
 
     /**
      * put item in pane
      * @param item item to put in pane, null for empty slot
      * @param position where to put the item
-     * @return previous value at the position if it's not null, return null otherwise
      */
-    public GUIItem addItem(GUIItem item, Index position) {
-        return get(pageNumber).put(position, item);
+    public void addItem(GUIItem item, Index position) {
+        get().put(position, item);
     }
     /**
      * put item in pane
      * @param item item to put in pane, null for empty slot
      * @param position where to put the item
      * @param page which page the item is in
-     * @return previous value at the position if it's not null, return null otherwise
      */
-    public GUIItem addItem(GUIItem item, Index position, int page) {
-        return get(page).put(position, item);
-    }
-
-    @Override
-    public Map<Index, GUIItem> get(int pageNumber) {
-        return (pageNumber > size()) ? null : super.get(pageNumber - 1);
-    }
-
-    public Map<Index, GUIItem> get() {
-        return super.get(pageNumber - 1);
+    public void addItem(GUIItem item, Index position, int page) {
+        get(page).put(position, item);
     }
 
     //page
-    @Override public void next() {
-        if (pageNumber < size()) {
+    public void next() {
+        if (pageNumber < content.size()-1) {
             pageNumber++;
         }
     }
-    @Override public void previous() {
-        if (pageNumber > 1) {
+    public void previous() {
+        if (pageNumber > 0) {
             pageNumber--;
         }
     }
-    @Override public void jumpTo(int pageNumber) {
-        if (pageNumber >= 1 && pageNumber <= size())
-        this.pageNumber = pageNumber;
+    public void jumpTo(int pageNumber) {
+        if (pageNumber >= 0 && pageNumber < content.size()) {
+            this.pageNumber = pageNumber;
+        }
     }
-    @Override public int currentPage() { return pageNumber; }
+    public int currentPage() { return pageNumber; }
+    public int displayPage() { return pageNumber + 1; }
     //end
 
     @Override

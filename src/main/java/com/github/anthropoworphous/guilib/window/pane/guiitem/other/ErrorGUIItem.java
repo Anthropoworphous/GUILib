@@ -1,8 +1,10 @@
-package com.github.anthropoworphous.guilib.window.pane.guiitem.base;
+package com.github.anthropoworphous.guilib.window.pane.guiitem.other;
 
 import com.github.anthropoworphous.guilib.window.Window;
 import com.github.anthropoworphous.guilib.window.pane.Pane;
 import com.github.anthropoworphous.guilib.window.WindowSlot;
+import com.github.anthropoworphous.guilib.window.pane.guiitem.GUIItem;
+import com.github.anthropoworphous.guilib.window.pane.guiitem.util.Util;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
@@ -12,12 +14,12 @@ import java.util.List;
 
 public class ErrorGUIItem extends GUIItem {
     public ErrorGUIItem(String error, List<Component> debugInfo) {
-        super(
+        super(Util.Item.Create.create(
                 Material.RED_STAINED_GLASS_PANE,
                 1,
                 Component.text().append(Component.text(error)).build(),
                 debugInfo
-        );
+        ));
     }
 
     @Override
