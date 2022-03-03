@@ -1,8 +1,8 @@
 package com.github.anthropoworphous.guilib.window.pane.guiitem.other;
 
 import com.github.anthropoworphous.guilib.window.Window;
-import com.github.anthropoworphous.guilib.window.pane.Pane;
 import com.github.anthropoworphous.guilib.window.WindowSlot;
+import com.github.anthropoworphous.guilib.window.pane.Pane;
 import com.github.anthropoworphous.guilib.window.pane.guiitem.GUIItem;
 import com.github.anthropoworphous.guilib.window.pane.guiitem.util.Util;
 import net.kyori.adventure.text.Component;
@@ -35,7 +35,7 @@ public class ErrorGUIItem extends GUIItem {
                 Component.text("\tAt: " + ((Pane) c).getName() + " || Layer: " + c.getGeneration())));
 
         print.append(Component.text("Environment:"))
-                .append(Component.text("\tWindow: " + clickedWindow.getName()))
+                .append(Component.text("\tGUI: " + clickedWindow.gui().getName()))
                 .append(Component.text("\tClick: " + event.getClick()))
                 .append(Component.text("\tSlot Index: " + event.getSlot()))
                 .append(Component.text("\tRaw slot Index: " + event.getRawSlot()));

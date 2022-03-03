@@ -6,27 +6,26 @@ import com.github.anthropoworphous.guilib.window.pane.Pane;
 import main.index.Index;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public interface IGUIItem {
     ItemStack getDisplayItem();
 
     /**
-     * Called whenever the window containing this item tried to show
-     * @param inventory the inventory that's connected to the window
-     * @param window the window that's calling for this item
+     * Called whenever the GUI containing this item tried to show
+     * @param win the window the item was created for
      * @param pane the pane this item is in
+     * @param itemIndex the inventory(not pane) index the item will be in
      */
-    void onInitialised(Inventory inventory, Window window, Pane pane);
+    void onInitialised(Window win, Pane pane, Index itemIndex);
     /**
      * Called whenever this item is actually displayed
-     * @param inventory the inventory that's connected to the window
-     * @param window the window that's calling for this item
+     * @param win the window this item will be in
      * @param slot the slot it's put in
      * @param pane the pane this item is in
+     * @param index the slot this item is in
      */
-    void onDrew(Inventory inventory, Window window, Pane pane, WindowSlot slot, Index index);
+    void onDraw(Window win, Pane pane, WindowSlot slot, Index index);
     void onClick(Window clickedWindow, WindowSlot slot, Pane pane, InventoryClickEvent event);
     void onClose(Window closedWindow, WindowSlot slot, Pane pane, InventoryCloseEvent event);
     IGUIItem copy();

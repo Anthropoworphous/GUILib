@@ -1,6 +1,6 @@
 package com.github.anthropoworphous.guilib;
 
-import com.github.anthropoworphous.guilib.window.WindowListener;
+import com.github.anthropoworphous.guilib.window.GUIListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,7 +27,7 @@ public final class GUILib extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
-        Bukkit.getPluginManager().registerEvents(new WindowListener(), this);
+        Bukkit.getPluginManager().registerEvents(new GUIListener(), this);
         Bukkit.getLogger().info("GUILib loaded");
     }
 }

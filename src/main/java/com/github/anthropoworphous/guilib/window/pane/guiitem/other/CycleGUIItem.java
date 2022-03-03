@@ -7,7 +7,6 @@ import com.github.anthropoworphous.guilib.window.pane.Pane;
 import com.github.anthropoworphous.guilib.window.pane.guiitem.GUIItem;
 import main.index.Index;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -39,13 +38,13 @@ public class CycleGUIItem extends GUIItem {
     }
 
     @Override
-    public final void onDrew(Inventory inventory, Window window, Pane pane, WindowSlot slot, Index index) {
-        super.onDrew(inventory, window, pane, slot, index);
+    public final void onDraw(Window win, Pane pane, WindowSlot slot, Index index) {
+        super.onDraw(win, pane, slot, index);
         cycle = new BukkitRunnable() {
             @Override
             public void run() {
                 cycleIndex = (cycleIndex+1 >= items.size() ? 0 : cycleIndex+1);
-                window.refresh(inventory, index);
+                win.refresh(index);
             }
         }.runTaskTimer(GUILib.getPlugin(), cycleOffset, cycleSpeed);
     }

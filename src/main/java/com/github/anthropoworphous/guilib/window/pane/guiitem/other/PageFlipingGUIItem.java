@@ -39,19 +39,19 @@ public class PageFlipingGUIItem extends GUIItem {
             switch (flipMode) {
                 case NEXT -> holder.next();
                 case PREVIOUS -> holder.previous();
-                case NEXT_WITH_CYCLE -> { if (holder.currentPage() >= holder.content().size()-1) {
+                case NEXT_WITH_CYCLE -> { if (holder.currentPage() >= holder.getPageLimit()-1) {
                     holder.jumpTo(0);
                 } else {
                     holder.next();
                 }}
                 case PREVIOUS_WITH_CYCLE -> { if (holder.currentPage() <= 0) {
-                    holder.jumpTo(holder.content().size()-1);
+                    holder.jumpTo(holder.getPageLimit()-1);
                 } else {
                     holder.previous();
                 }}
-                case TO_THE_END -> holder.jumpTo(holder.content().size()-1);
+                case TO_THE_END -> holder.jumpTo(holder.getPageLimit()-1);
                 case TO_THE_START -> holder.jumpTo(0);
-                case RANDOM -> holder.jumpTo((int) (Math.random() * (holder.content().size()-1)));
+                case RANDOM -> holder.jumpTo((int) (Math.random() * (holder.getPageLimit()-1)));
             }
         }
     }

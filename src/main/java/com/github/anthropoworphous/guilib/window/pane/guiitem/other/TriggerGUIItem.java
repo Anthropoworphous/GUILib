@@ -41,12 +41,12 @@ public class TriggerGUIItem extends GUIItem {
         if (clicked) { return; }
         execute.run();
         clicked = true;
-        clickedWindow.refresh(event.getClickedInventory(), new ID(event.getSlot()));
+        clickedWindow.refresh(new ID(event.getSlot()));
         new BukkitRunnable() {
             @Override
             public void run() {
                 clicked = false;
-                clickedWindow.refresh(event.getClickedInventory(), new ID(event.getSlot()));
+                clickedWindow.refresh(new ID(event.getSlot()));
             }
         }.runTaskLater(GUILib.getPlugin(), coolDown);
     }

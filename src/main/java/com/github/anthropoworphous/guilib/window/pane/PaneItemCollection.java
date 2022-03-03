@@ -12,16 +12,18 @@ public class PaneItemCollection implements IConnectable {
         this.pageLimit = pageLimit;
     }
 
+    //field
     private int pageNumber = 0;
     private int pageLimit = 1;
-    private final Map<Integer, Map<Index, GUIItem>> content = new HashMap<>();
+    private final Map<Integer, Map<Index, GUIItem>> content = new HashMap<>(); //page(slot,item)
+    //end
 
     //getter
-    public List<Map<Index, GUIItem>> content() {
-        int max = content.keySet().stream().max(Comparator.comparingInt(x -> x)).orElse(0);
-        List<Map<Index, GUIItem>> result = new ArrayList<>(max);
-        content.forEach(result::set);
-        return result;
+    public int getPageNumber() {
+        return pageNumber;
+    }
+    public int getPageLimit() {
+        return pageLimit;
     }
     //end
 

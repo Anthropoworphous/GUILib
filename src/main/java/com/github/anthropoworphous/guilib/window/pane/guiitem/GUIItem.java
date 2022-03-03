@@ -6,7 +6,6 @@ import com.github.anthropoworphous.guilib.window.pane.Pane;
 import main.index.Index;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class GUIItem implements IGUIItem {
@@ -43,9 +42,9 @@ public class GUIItem implements IGUIItem {
     }
 
     @Override
-    public void onInitialised(Inventory inventory, Window window, Pane pane) {}
+    public void onInitialised(Window win, Pane pane, Index itemIndex) {}
     @Override
-    public void onDrew(Inventory inventory, Window window, Pane pane, WindowSlot slot, Index index) {}
+    public void onDraw(Window win, Pane pane, WindowSlot slot, Index index) {}
     @Override
     public void onClick(Window clickedWindow, WindowSlot slot, Pane pane, InventoryClickEvent event) {}
     @Override

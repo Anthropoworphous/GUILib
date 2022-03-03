@@ -137,23 +137,24 @@ public class Pane extends Connected {
         }
     }
 
-    private Map<Index, GUIItem> unoffsettedContent(Inventory inv, Window requestingWindow) {
+    private Map<Index, GUIItem> unoffsettedContent(Window win) {
         Map<Index, GUIItem> out = new HashMap<>();
         getValue().get().forEach(
                 (id, item) -> {
-                    out.put(unoffset(id), item);
-                    item.onInitialised(inv, requestingWindow, this);
+                    Index unoffseted = unoffset(id);
+                    out.put(unoffseted, item);
+                    item.onInitialised(win, this, unoffseted);
                 }
         );
         return out;
     }
 
-    private Map<Index, WindowSlot> map(Inventory inv, Window requestingWindow) {
+    private Map<Index, WindowSlot> map(Window win) {
         Map<Index, WindowSlot> result = new HashMap<>();
 
         toLayer().forEach(layer ->
                 layer.forEach(pane ->
-                        ((Pane) pane).unoffsettedContent(inv, requestingWindow).forEach((id, item) -> {
+                        ((Pane) pane).unoffsettedContent(win).forEach((id, item) -> {
                             result.computeIfAbsent(id, i -> new WindowSlot((Pane) pane, new HashMap<>()));
                             WindowSlot slot = result.get(id);
 
@@ -173,16 +174,16 @@ public class Pane extends Connected {
 
     /**
      * Put all the predefined GUIItems in an inventory
-     * @param inv the target inventory
+     * @param win the target window
      * @return everything displayed in the inventory
      */
-    public Map<Index, WindowSlot> draw(Inventory inv, Window requestingWindow) {
-        Map<Index, WindowSlot> result = map(inv, requestingWindow);
+    public Map<Index, WindowSlot> draw(Window win) {
+        Map<Index, WindowSlot> result = map(win);
 
         result.forEach((index, slot) -> {
             IGUIItem displayingItem = slot.getGUIItem();
-            displayingItem.onDrew(inv, requestingWindow, this, slot, index);
-            inv.setItem(index.toIndex(), displayingItem.getDisplayItem());
+            displayingItem.onDraw(win, this, slot, index);
+            win.inv().setItem(index.toIndex(), displayingItem.getDisplayItem());
         });
 
         return result;
