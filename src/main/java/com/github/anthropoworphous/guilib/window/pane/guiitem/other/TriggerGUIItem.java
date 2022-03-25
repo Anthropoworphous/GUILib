@@ -38,9 +38,11 @@ public class TriggerGUIItem extends GUIItem {
     @Override
     public final void onClick(Window clickedWindow, WindowSlot slot, Pane pane, InventoryClickEvent event) {
         super.onClick(clickedWindow, slot, pane, event);
+
         if (clicked) { return; }
         execute.run();
         clicked = true;
+
         clickedWindow.refresh(new ID(event.getSlot()));
         new BukkitRunnable() {
             @Override

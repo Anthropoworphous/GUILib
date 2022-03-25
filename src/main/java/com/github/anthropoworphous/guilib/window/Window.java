@@ -17,7 +17,7 @@ public class Window {
 
     private final GUI gui;
     private final Inventory inv;
-    private final Map<Index, WindowSlot> itemReferences;
+    private Map<Index, WindowSlot> itemReferences;
 
     //getter
     public GUI gui() { return gui; }
@@ -30,12 +30,17 @@ public class Window {
         viewer.openInventory(inv);
     }
 
+    public void reload() {
+        inv.clear();
+        itemReferences = gui.getMainPane().draw(this);
+    }
+
     /**
      * Refresh GUIItem, if changes where made to the displayed item this will update it
      * @param targetIndex item to refresh
      */
     public void refresh(Index targetIndex) {
-        Pane.draw(inv, targetIndex, itemReferences.get(targetIndex));
+        Pane.draw(inv, targetIndex, itemReferences);
     }
 
     /**

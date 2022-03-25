@@ -6,8 +6,8 @@ import com.github.anthropoworphous.guilib.window.pane.Pane;
 import com.github.anthropoworphous.guilib.window.pane.guiitem.GUIItem;
 import com.github.anthropoworphous.guilib.window.pane.guiitem.util.Util;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.List;
@@ -24,22 +24,19 @@ public class ErrorGUIItem extends GUIItem {
 
     @Override
     public void onClick(Window clickedWindow, WindowSlot slot, Pane pane, InventoryClickEvent event) {
+        Player p = (Player) event.getWhoClicked();
+
         if (event.getClickedInventory() == null) { return; }
         event.getClickedInventory().close();
 
-        TextComponent.Builder print = Component.text();
+        p.sendMessage("StackTrace or something lmao have fun debugging:");
 
-        print.append(Component.text("StackTrace or something lmao have fun debugging:"));
+        pane.parentsWork(c -> p.sendMessage("    At: " + ((Pane) c).getName() + " || Layer: " + c.getGeneration()));
 
-        pane.parentsWork(c -> print.append(
-                Component.text("\tAt: " + ((Pane) c).getName() + " || Layer: " + c.getGeneration())));
-
-        print.append(Component.text("Environment:"))
-                .append(Component.text("\tGUI: " + clickedWindow.gui().getName()))
-                .append(Component.text("\tClick: " + event.getClick()))
-                .append(Component.text("\tSlot Index: " + event.getSlot()))
-                .append(Component.text("\tRaw slot Index: " + event.getRawSlot()));
-
-        event.getWhoClicked().sendMessage(print.build());
+        p.sendMessage("Environment:");
+        p.sendMessage(Component.text("    GUI: " + clickedWindow.gui().getName()));
+        p.sendMessage(Component.text("    Click: " + event.getClick()));
+        p.sendMessage(Component.text("    Slot Index: " + event.getSlot()));
+        p.sendMessage(Component.text("    Raw slot Index: " + event.getRawSlot()));
     }
 }

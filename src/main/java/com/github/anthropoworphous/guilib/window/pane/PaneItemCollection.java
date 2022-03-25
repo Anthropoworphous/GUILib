@@ -4,7 +4,8 @@ import com.github.anthropoworphous.guilib.window.pane.guiitem.GUIItem;
 import main.index.Index;
 import main.structure.tree.IConnectable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PaneItemCollection implements IConnectable {
     public PaneItemCollection() {}
@@ -61,7 +62,7 @@ public class PaneItemCollection implements IConnectable {
 
     //page
     public void next() {
-        if (pageNumber < content.size()-1) {
+        if (pageNumber < pageLimit-1) {
             pageNumber++;
         }
     }

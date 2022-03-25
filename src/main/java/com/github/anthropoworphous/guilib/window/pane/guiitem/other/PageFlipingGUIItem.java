@@ -54,6 +54,7 @@ public class PageFlipingGUIItem extends GUIItem {
                 case RANDOM -> holder.jumpTo((int) (Math.random() * (holder.getPageLimit()-1)));
             }
         }
+        clickedWindow.reload();
     }
 
     public enum FlipMode {

@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Pane extends Connected {
     public Pane(Index location, int width, int height, String name, int pages) {
@@ -152,22 +153,21 @@ public class Pane extends Connected {
     private Map<Index, WindowSlot> map(Window win) {
         Map<Index, WindowSlot> result = new HashMap<>();
 
-        toLayer().forEach(layer ->
-                layer.forEach(pane ->
-                        ((Pane) pane).unoffsettedContent(win).forEach((id, item) -> {
-                            result.computeIfAbsent(id, i -> new WindowSlot((Pane) pane, new HashMap<>()));
-                            WindowSlot slot = result.get(id);
+        for (Set<Connected> layer : toLayer()) {
+            for (Connected pane : layer) {
+                ((Pane) pane).unoffsettedContent(win).forEach((id, item) -> {
+                    result.computeIfAbsent(id, i -> new WindowSlot((Pane) pane, new HashMap<>()));
+                    WindowSlot slot = result.get(id);
 
-                            if (slot.items().put(id.toIndex(), item) != null) {
-                                slot.items().put(id.toIndex(), new ErrorGUIItem("GUIItem Collision", List.of(
-                                        Component.text().append(Component.text("At depth: " + this.getGeneration())).build(),
-                                        Component.text().append(Component.text("At slot: " + id.toIndex())).build()
-                                )));
-                            }
-                            result.put(new ID(id.toIndex()), slot);
-                        })
-                )
-        );
+                    if (slot.items().put(id.toIndex(), item) != null) {
+                        slot.items().put(id.toIndex(), new ErrorGUIItem("GUIItem Collision", List.of(
+                                Component.text().append(Component.text("click for more info")).build()
+                        )));
+                    }
+                    result.put(new ID(id.toIndex()), slot);
+                });
+            }
+        }
 
         return result;
     }
@@ -193,10 +193,10 @@ public class Pane extends Connected {
      * Simple draw that ignore all limit and just put a slot on a certain index in the inventory
      * @param inv inventory to draw on
      * @param index slot index that's being drawn
-     * @param slot slot item that's getting drawn
+     * @param itemReferences itemReferences of a window
      */
-    static public void draw(Inventory inv, Index index, WindowSlot slot) {
-        inv.setItem(index.toIndex(), slot.getGUIItem().getDisplayItem());
+    static public void draw(Inventory inv, Index index, Map<Index, WindowSlot> itemReferences) {
+        inv.setItem(index.toIndex(), itemReferences.get(index).getGUIItem().getDisplayItem());
     }
     //end
 

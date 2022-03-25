@@ -14,9 +14,7 @@ public class GUIListener implements Listener {
             event.setCancelled(true);
             WindowSlot slot = win.itemReferences().get(new ID(event.getSlot()));
 
-            if (slot != null) {
-                slot.getGUIItem().onClick(win, slot, slot.pane(), event);
-            }
+            slot.getGUIItem().onClick(win, slot, slot.pane(), event);
         }
     }
 
