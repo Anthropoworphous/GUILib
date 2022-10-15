@@ -2,12 +2,9 @@ package com.github.anthropoworphous.guilib.window;
 
 import com.github.anthropoworphous.guilib.window.inventory.InventoryBuilder;
 import com.github.anthropoworphous.guilib.window.pane.Pane;
-import main.index.ID;
-import main.structure.tree.Connected;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,13 +17,13 @@ import java.util.Map;
 public class GUI implements Listener {
     public GUI(@NotNull InventoryBuilder builder, Pane mainPane, String name) {
         this.builder = builder;
-        this.mainPane = new Pane(new ID(0), builder.getWidth(), builder.getHeight(), "ROOT_PANE");
+        this.mainPane = new Pane(0, builder.getWidth(), builder.getHeight(), "ROOT_PANE");
         this.mainPane.adopt(mainPane);
         this.name = name;
     }
     public GUI(@NotNull InventoryBuilder builder, String name) {
         this.builder = builder;
-        this.mainPane = new Pane(new ID(0), builder.getWidth(), builder.getHeight(), "ROOT_PANE");
+        this.mainPane = new Pane(0, builder.getWidth(), builder.getHeight(), "ROOT_PANE");
         this.name = name;
     }
 
@@ -43,17 +40,10 @@ public class GUI implements Listener {
     /**
      * Switch or add a new Pane to MainPane
      * @param mainPane This isn't the actual main pane, the main pane is generated when the Pane is created
-     * @return Old Pane if there is one, null otherwise
      */
-    @Nullable public Pane setMainPane(@NotNull Pane mainPane) {
-        Connected child = null;
-        if (this.mainPane.getChild().size() == 1) { //actual mainPane should only have 1 or no child
-            child = this.mainPane.getChild().get(0);
-            this.mainPane.disown(0);
-        }
+    public void setMainPane(@NotNull Pane mainPane) {
+        this.mainPane.descent().ifPresent(descendants -> descendants.forEach(this.mainPane::disown));
         this.mainPane.adopt(mainPane);
-
-        return (Pane)child;
     }
 
     @NotNull protected static Map<Inventory, Window> getActiveWindows() {

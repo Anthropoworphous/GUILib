@@ -33,7 +33,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.4.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -42,6 +42,12 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.github.anthropoworphous.OWOToolkit</pattern>
+                                    <shadedPattern>OWOToolkit</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
@@ -75,12 +81,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.anthropoworphous</groupId>
-            <artifactId>OWOToolkit</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.9.0</version>
@@ -98,6 +98,12 @@
             <artifactId>MockBukkit-v1.16</artifactId>
             <version>1.5.2</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.anthropoworphous</groupId>
+            <artifactId>OWOToolkit</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </project>

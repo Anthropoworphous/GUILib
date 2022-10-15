@@ -5,7 +5,6 @@ import com.github.anthropoworphous.guilib.window.Window;
 import com.github.anthropoworphous.guilib.window.WindowSlot;
 import com.github.anthropoworphous.guilib.window.pane.Pane;
 import com.github.anthropoworphous.guilib.window.pane.guiitem.GUIItem;
-import main.index.ID;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -43,12 +42,12 @@ public class TriggerGUIItem extends GUIItem {
         execute.run();
         clicked = true;
 
-        clickedWindow.refresh(new ID(event.getSlot()));
+        clickedWindow.refresh(event.getSlot());
         new BukkitRunnable() {
             @Override
             public void run() {
                 clicked = false;
-                clickedWindow.refresh(new ID(event.getSlot()));
+                clickedWindow.refresh(event.getSlot());
             }
         }.runTaskLater(GUILib.getPlugin(), coolDown);
     }
