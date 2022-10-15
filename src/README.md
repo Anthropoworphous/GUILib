@@ -11,6 +11,15 @@ local .m2 repo go download and insert yourself lol
     <groupId>com.github.anthropoworphous</groupId>
     <artifactId>GUILib</artifactId>
     <version>1.0.0</version>
-    <scope>provided</scope>
+</dependency>
+```
+
+here is the maven thing for the OWOToolkit
+
+```html
+<dependency>
+    <groupId>com.github.anthropoworphous</groupId>
+    <artifactId>OWOToolkit</artifactId>
+    <version>1.0.0</version>
 </dependency>
 ```
