@@ -1,63 +1,59 @@
 package com.github.anthropoworphous.guilib.window.pane;
 
 import com.github.anthropoworphous.guilib.window.pane.guiitem.GUIItem;
-import main.index.Index;
-import main.structure.tree.IConnectable;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-public class PaneItemCollection implements IConnectable {
-    public PaneItemCollection() {}
-    public PaneItemCollection(int pageLimit) {
+public class PaneItemCluster {
+    public PaneItemCluster(int size) { this.size = size; }
+    public PaneItemCluster(int size, int pageLimit) {
+        this.size = size;
         this.pageLimit = pageLimit;
     }
 
     //field
+    private final int size;
     private int pageNumber = 0;
     private int pageLimit = 1;
-    private final Map<Integer, Map<Index, GUIItem>> content = new HashMap<>(); //page(slot,item)
+    private final List<GUIItem[]> content = new ArrayList<>(); //page<slots>
     //end
 
     //getter
-    public int getPageNumber() {
+    public int pageNumber() {
         return pageNumber;
     }
-    public int getPageLimit() {
+    public int pageLimit() {
         return pageLimit;
     }
     //end
 
-    private void mkdir(int targetPage) {
-        if (content.size() < pageLimit) {
-            content.computeIfAbsent(targetPage, ignore -> new HashMap<>());
-        }
+    private void populatePages(int targetPage) {
+
     }
 
-    public Map<Index, GUIItem> get(int pageNumber) {
-        mkdir(pageNumber);
+    public GUIItem[] get(int pageNumber) {
+        populatePages(pageNumber);
         return content.get(pageNumber);
     }
-    public Map<Index, GUIItem> get() {
+    public GUIItem[] get() {
         return get(pageNumber);
     }
 
     /**
      * put item in pane
      * @param item item to put in pane, null for empty slot
-     * @param position where to put the item
+     * @param id where to put the item
      */
-    public void addItem(GUIItem item, Index position) {
-        get().put(position, item);
-    }
+    public void setItem(GUIItem item, int id) { get()[id] = item; }
     /**
      * put item in pane
      * @param item item to put in pane, null for empty slot
-     * @param position where to put the item
+     * @param id where to put the item
      * @param page which page the item is in
      */
-    public void addItem(GUIItem item, Index position, int page) {
-        get(page).put(position, item);
+    public void setItem(GUIItem item, int id, int page) {
+        get(page)[id] = item;
     }
 
     //page

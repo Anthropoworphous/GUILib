@@ -31,7 +31,7 @@ public class ErrorGUIItem extends GUIItem {
 
         p.sendMessage("StackTrace or something lmao have fun debugging:");
 
-        pane.parentsWork(c -> p.sendMessage("    At: " + ((Pane) c).getName() + " || Layer: " + c.getGeneration()));
+        pane.parentsWork(c -> p.sendMessage("    At: " + ((Pane) c).name() + " || Layer: " + c.getGeneration()));
 
         p.sendMessage("Environment:");
         p.sendMessage(Component.text("    GUI: " + clickedWindow.gui().getName()));

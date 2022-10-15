@@ -3,7 +3,7 @@ package com.github.anthropoworphous.guilib.window.pane.guiitem.other;
 import com.github.anthropoworphous.guilib.window.Window;
 import com.github.anthropoworphous.guilib.window.WindowSlot;
 import com.github.anthropoworphous.guilib.window.pane.Pane;
-import com.github.anthropoworphous.guilib.window.pane.PaneItemCollection;
+import com.github.anthropoworphous.guilib.window.pane.PaneItemCluster;
 import com.github.anthropoworphous.guilib.window.pane.guiitem.GUIItem;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -32,26 +32,26 @@ public class PageFlipingGUIItem extends GUIItem {
     @Override
     public final void onClick(Window clickedWindow, WindowSlot slot, Pane pane, InventoryClickEvent event) {
         super.onClick(clickedWindow, slot, pane, event);
-        PaneItemCollection holder = pageHolder.getValue(PaneItemCollection.class);
+        PaneItemCluster holder = pageHolder.value();
         if (flipMode == null) {
             holder.jumpTo(Optional.ofNullable(pageNumberGetter).orElse(() -> 0).get()); //should never be null but just to be safe u know?
         } else {
             switch (flipMode) {
                 case NEXT -> holder.next();
                 case PREVIOUS -> holder.previous();
-                case NEXT_WITH_CYCLE -> { if (holder.currentPage() >= holder.getPageLimit()-1) {
+                case NEXT_WITH_CYCLE -> { if (holder.currentPage() >= holder.pageLimit()-1) {
                     holder.jumpTo(0);
                 } else {
                     holder.next();
                 }}
                 case PREVIOUS_WITH_CYCLE -> { if (holder.currentPage() <= 0) {
-                    holder.jumpTo(holder.getPageLimit()-1);
+                    holder.jumpTo(holder.pageLimit()-1);
                 } else {
                     holder.previous();
                 }}
-                case TO_THE_END -> holder.jumpTo(holder.getPageLimit()-1);
+                case TO_THE_END -> holder.jumpTo(holder.pageLimit()-1);
                 case TO_THE_START -> holder.jumpTo(0);
-                case RANDOM -> holder.jumpTo((int) (Math.random() * (holder.getPageLimit()-1)));
+                case RANDOM -> holder.jumpTo((int) (Math.random() * (holder.pageLimit()-1)));
             }
         }
         clickedWindow.reload();
