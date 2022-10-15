@@ -3,7 +3,6 @@ package com.github.anthropoworphous.guilib.window.pane.guiitem;
 import com.github.anthropoworphous.guilib.window.Window;
 import com.github.anthropoworphous.guilib.window.WindowSlot;
 import com.github.anthropoworphous.guilib.window.pane.Pane;
-import main.index.Index;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
@@ -42,9 +41,9 @@ public class GUIItem implements IGUIItem {
     }
 
     @Override
-    public void onInitialised(Window win, Pane pane, Index itemIndex) {}
+    public void onInitialised(Window win, Pane pane, int itemIndex) {}
     @Override
-    public void onDraw(Window win, Pane pane, WindowSlot slot, Index index) {}
+    public void onDraw(Window win, Pane pane, WindowSlot slot, int index) {}
     @Override
     public void onClick(Window clickedWindow, WindowSlot slot, Pane pane, InventoryClickEvent event) {}
     @Override

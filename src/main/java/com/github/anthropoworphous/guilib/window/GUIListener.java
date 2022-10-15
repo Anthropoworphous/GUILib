@@ -1,6 +1,5 @@
 package com.github.anthropoworphous.guilib.window;
 
-import main.index.ID;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -12,9 +11,11 @@ public class GUIListener implements Listener {
         Window win = GUI.getActiveWindows().get(event.getInventory());
         if (win != null && win.inv() == event.getClickedInventory()) {
             event.setCancelled(true);
-            WindowSlot slot = win.itemReferences().get(new ID(event.getSlot()));
+            WindowSlot slot = win.content()[event.getSlot()];
 
-            slot.getGUIItem().onClick(win, slot, slot.pane(), event);
+            if (slot.getGUIItem() != null) {
+                slot.getGUIItem().onClick(win, slot, slot.topPane(), event);
+            }
         }
     }
 
@@ -26,7 +27,12 @@ public class GUIListener implements Listener {
             if (win.inv().getViewers().size() == 0) {
                 GUI.getActiveWindows().remove(win.inv()); //Garbage window collector lol
             }
-            win.itemReferences().values().forEach(item -> item.getGUIItem().onClose(win, item, item.pane(), event));
+            for (int i = 0; i < win.content().length; i++) {
+                WindowSlot slot = win.content()[i];
+                if (slot.getGUIItem() != null) {
+                    slot.getGUIItem().onClose(win, slot, slot.topPane(), event);
+                }
+            }
         }
     }
 }

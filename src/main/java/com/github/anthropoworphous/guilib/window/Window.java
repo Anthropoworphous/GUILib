@@ -2,27 +2,24 @@ package com.github.anthropoworphous.guilib.window;
 
 import com.github.anthropoworphous.guilib.window.pane.Pane;
 import com.github.anthropoworphous.guilib.window.pane.guiitem.IGUIItem;
-import main.index.Index;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-
-import java.util.Map;
 
 public class Window {
     public Window(GUI gui) {
         this.gui = gui;
         inv = gui.getInventoryBuilder().getInventory();
-        itemReferences = gui.getMainPane().draw(this);
+        content = gui.getMainPane().draw(this);
     }
 
     private final GUI gui;
     private final Inventory inv;
-    private Map<Index, WindowSlot> itemReferences;
+    private WindowSlot[] content;
 
     //getter
     public GUI gui() { return gui; }
     public Inventory inv() { return inv; }
-    public Map<Index, WindowSlot> itemReferences() { return itemReferences; }
+    public WindowSlot[] content() { return content; }
     //end
 
     public void show(Player viewer) {
@@ -32,15 +29,15 @@ public class Window {
 
     public void reload() {
         inv.clear();
-        itemReferences = gui.getMainPane().draw(this);
+        content = gui.getMainPane().draw(this);
     }
 
     /**
      * Refresh GUIItem, if changes where made to the displayed item this will update it
      * @param targetIndex item to refresh
      */
-    public void refresh(Index targetIndex) {
-        Pane.draw(inv, targetIndex, itemReferences);
+    public void refresh(int targetIndex) {
+        Pane.draw(inv, targetIndex, content);
     }
 
     /**
@@ -49,10 +46,10 @@ public class Window {
      * @param targetItem item to refresh
      */
     public void refresh(IGUIItem targetItem) {
-        itemReferences.entrySet()
-                .stream()
-                .filter(set -> set.getValue().getGUIItem() == targetItem)
-                .map(Map.Entry::getKey)
-                .forEach(this::refresh);
+        for (int i = 0; i < content.length; i++) {
+            if (content[i].getGUIItem() == targetItem) {
+                refresh(i);
+            }
+        }
     }
 }

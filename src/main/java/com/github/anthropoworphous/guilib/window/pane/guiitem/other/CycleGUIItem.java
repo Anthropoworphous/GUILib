@@ -5,7 +5,6 @@ import com.github.anthropoworphous.guilib.window.Window;
 import com.github.anthropoworphous.guilib.window.WindowSlot;
 import com.github.anthropoworphous.guilib.window.pane.Pane;
 import com.github.anthropoworphous.guilib.window.pane.guiitem.GUIItem;
-import main.index.Index;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -38,7 +37,7 @@ public class CycleGUIItem extends GUIItem {
     }
 
     @Override
-    public final void onDraw(Window win, Pane pane, WindowSlot slot, Index index) {
+    public final void onDraw(Window win, Pane pane, WindowSlot slot, int index) {
         super.onDraw(win, pane, slot, index);
         cycle = new BukkitRunnable() {
             @Override

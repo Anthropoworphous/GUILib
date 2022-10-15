@@ -1,13 +1,12 @@
 package com.github.anthropoworphous.guilib.window.inventory;
 
-import main.structure.tree.IConnectable;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
 import java.util.Arrays;
 
-public class InventoryBuilder implements IConnectable {
+public class InventoryBuilder {
     public InventoryBuilder(InventoryType invType) {
         this.invType = invType;
         if (Arrays.stream(SUPPORTED_INVENTORY_TYPES).noneMatch(t -> t == invType)) {

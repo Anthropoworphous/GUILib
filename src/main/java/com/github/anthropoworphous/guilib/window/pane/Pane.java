@@ -4,170 +4,134 @@ import com.github.anthropoworphous.guilib.window.Window;
 import com.github.anthropoworphous.guilib.window.WindowSlot;
 import com.github.anthropoworphous.guilib.window.pane.guiitem.GUIItem;
 import com.github.anthropoworphous.guilib.window.pane.guiitem.IGUIItem;
-import com.github.anthropoworphous.guilib.window.pane.guiitem.other.ErrorGUIItem;
+import com.github.anthropoworphous.guilib.window.pane.guiitem.util.XYIndex;
 import com.github.anthropoworphous.guilib.window.pane.pattern.Pattern;
-import main.index.ID;
-import main.index.Index;
-import main.index.XY;
+import main.index.Indexed;
 import main.structure.tree.Connected;
-import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.Inventory;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-public class Pane extends Connected {
-    public Pane(Index location, int width, int height, String name, int pages) {
-        super(new PaneItemCollection(pages));
-        this.location = location;
+public class Pane extends Connected<PaneItemCluster> implements Indexed {
+    public Pane(int index, int width, int height, String name) {
+        super(new PaneItemCluster(width * height));
+        this.name = name;
         this.width = width;
         this.height = height;
-        this.name = name;
+        this.index = index;
     }
-    public Pane(Index location, int width, int height, String name) {
-        super(new PaneItemCollection());
-        this.location = location;
+    public Pane(int index, int width, int height, String name, int pages) {
+        super(new PaneItemCluster(width * height));
+        this.name = name;
         this.width = width;
         this.height = height;
-        this.name = name;
+        this.index = index;
     }
 
     //field - don't forget about the connected value
-    private int width, height;
-    private final Index location;
     private final String name;
+    private final int width, height;
+    private int index;
     //end
 
-    //getter
-    public String getName() {
-        return name;
-    }
-    public int getWidth() {
-        return width;
-    }
-    public int getHeight() {
-        return height;
-    }
-    public Index getLocation() {
-        return location;
-    }
+    //getter & setter
+    public String name() { return name; }
+    public int width() { return width; }
+    public int height() { return height; }
+    public int size() { return width * height; }
 
     @Override
-    public @NotNull PaneItemCollection getValue() {
-        return super.getValue(PaneItemCollection.class);
-    }
+    public int index() { return index; }
+    @Override
+    public void index(int i) { index = i; }
     //end
 
     //set up
-    public Pane addItem(Index id, GUIItem item) {
-        getValue().addItem(item, id);
-        return this;
+    public void addItem(int id, GUIItem item) {
+        value().setItem(item, id);
     }
+
     public Pane pattern(Pattern.DefinedPattern pattern) {
-        if (pattern.width() > width || pattern.height() > height) {
-            throw new IllegalArgumentException("Pattern is too big for pane " + name + "! " +
-                    pattern.width() + "x" + pattern.height() + " won't fit in " +
-                    width + "x" + height
-            );
+        if (pattern.width() != width || pattern.height() != height) {
+            throw new InvalidSizeException(this, pattern);
         }
-        pattern.mappedItems().forEach((y, map) -> map.forEach((x, item) -> addItem(new ID(y * width + x), item)));
+        pattern.mappedItems().forEach((y, map) ->
+                map.forEach((x, item) ->
+                        addItem(index(), item)));
         return this;
     }
+
     /**
      * @param page yes page number start at 0 not 1, display is handled, so you don't have to worry about "page 0"
-     * @param id slot
+     * @param id   slot
      * @param item item to add
-     * @return self
      */
-    public Pane addItem(int page, Index id, GUIItem item) {
-        getValue().addItem(item, id, page);
-        return this;
+    public void addItem(int page, int id, GUIItem item) {
+        value().setItem(item, id, page);
     }
+
     /**
      * @param page yes page number start at 0 not 1, display is handled, so you don't have to worry about "page 0"
      * @param pattern pattern to add
-     * @return self
      */
-    public Pane pattern(int page, Pattern.DefinedPattern pattern) {
+    public void pattern(int page, Pattern.DefinedPattern pattern) {
         if (pattern.width() > width || pattern.height() > height) {
             throw new IllegalArgumentException("Pattern is too big for pane " + name + "! " +
                     pattern.width() + "x" + pattern.height() + " won't fit in " +
                     width + "x" + height
             );
         }
-        pattern.mappedItems().forEach((y, map) -> map.forEach((x, item) -> addItem(page, new ID(y * width + x), item)));
-        return this;
+        pattern.mappedItems().forEach((y, map) ->
+                map.forEach((x, item) ->
+                        addItem(page, index(), item)));
     }
     //end
 
     //draw
-    public void resize(int width, int height) {
-        this.width = width;
-        this.height = height;
-        this.getParent().ifPresent(this::checkForBound);
-    }
+    private void checkForBound(Pane parent) {
+        offset(parent.index());
+        XYIndex index = new XYIndex(width, index());
 
-    private void checkForBound(Connected parent) {
-        Pane p = (Pane) parent;
-        XY xyPos = new XY(location, p.width);
-        XY xyDimension = xyPos.offset(width-1, height-1);
-
-        if (p.width < xyDimension.x() || p.height < xyDimension.y()) {
-            throw new IllegalStateException(
-                    "Pane \"" + name + "\" in layer " + getGeneration() +
-                            " require " + xyDimension.x() + "x" + xyDimension.y() +
-                            " slots, but Pane's parent \"" + p.name + "\"  in layer " + p.getGeneration() +
-                            " only have " + p.height + "x" + p.width + " slots" +
-                            " \n\t\t\"No!~ It won't fit ahhHHHouyhnhnm~\""
-            );
+        if (parent.width < index.x() || parent.height < index.y()) {
+            throw new InvalidSizeException(this, parent);
         }
     }
 
-    public Index unoffset(Index id) {
-        XY out = new XY(id.toIndex(), width);
-        if (getParent().isEmpty()) {
-            return out;
+    public int restoreIndex(int id) {
+        if (ascent().isEmpty()) {
+            return id;
         } else {
-            Pane p = (Pane) getParent().get();
-            out.width(p.width);
-            out.move(location);
-            return p.unoffset(out);
+            Pane p = (Pane) ascent().get();
+            return p.restoreIndex(id + index());
         }
     }
 
-    private Map<Index, GUIItem> unoffsettedContent(Window win) {
-        Map<Index, GUIItem> out = new HashMap<>();
-        getValue().get().forEach(
-                (id, item) -> {
-                    Index unoffseted = unoffset(id);
-                    out.put(unoffseted, item);
-                    item.onInitialised(win, this, unoffseted);
-                }
-        );
+    private GUIItem[] indexResolvedContent(Window win) {
+        GUIItem[] out = new GUIItem[size()];
+        GUIItem[] content = value().get();
+        for(int i = 0; i < content.length; i++) {
+            int actualIndex = restoreIndex(i);
+            out[actualIndex] = content[i];
+            content[i].onInitialised(win, this, actualIndex);
+        }
+
         return out;
     }
 
-    private Map<Index, WindowSlot> map(Window win) {
-        Map<Index, WindowSlot> result = new HashMap<>();
+    private WindowSlot[] map(Window win) {
+        WindowSlot[] result = new WindowSlot[win.inv().getSize()];
 
-        for (Set<Connected> layer : toLayer()) {
-            for (Connected pane : layer) {
-                ((Pane) pane).unoffsettedContent(win).forEach((id, item) -> {
-                    result.computeIfAbsent(id, i -> new WindowSlot((Pane) pane, new HashMap<>()));
-                    WindowSlot slot = result.get(id);
-
-                    if (slot.items().put(id.toIndex(), item) != null) {
-                        slot.items().put(id.toIndex(), new ErrorGUIItem("GUIItem Collision", List.of(
-                                Component.text().append(Component.text("click for more info")).build()
-                        )));
-                    }
-                    result.put(new ID(id.toIndex()), slot);
-                });
-            }
+        GUIItem[] indexResolvedContent = indexResolvedContent(win);
+        for (int i = 0; i < indexResolvedContent.length; i++) {
+            GUIItem item = indexResolvedContent[i];
+            result[i].stack(item, this);
         }
+
+        // if descents exist, combine their contents and add on to it
+        descent().ifPresent(descendants -> {
+            for (Connected<PaneItemCluster> descendant : descendants) {
+                WindowSlot[] descendantResult = ((Pane) descendant).map(win);
+                System.arraycopy(descendantResult, 0, result, 0, result.length);
+            }
+        });
 
         return result;
     }
@@ -177,14 +141,14 @@ public class Pane extends Connected {
      * @param win the target window
      * @return everything displayed in the inventory
      */
-    public Map<Index, WindowSlot> draw(Window win) {
-        Map<Index, WindowSlot> result = map(win);
+    public WindowSlot[] draw(Window win) {
+        WindowSlot[] result = map(win);
 
-        result.forEach((index, slot) -> {
+        for (WindowSlot slot : result) {
             IGUIItem displayingItem = slot.getGUIItem();
             displayingItem.onDraw(win, this, slot, index);
-            win.inv().setItem(index.toIndex(), displayingItem.getDisplayItem());
-        });
+            win.inv().setItem(index, displayingItem.getDisplayItem());
+        }
 
         return result;
     }
@@ -195,15 +159,32 @@ public class Pane extends Connected {
      * @param index slot index that's being drawn
      * @param itemReferences itemReferences of a window
      */
-    static public void draw(Inventory inv, Index index, Map<Index, WindowSlot> itemReferences) {
-        inv.setItem(index.toIndex(), itemReferences.get(index).getGUIItem().getDisplayItem());
+    static public void draw(Inventory inv, int index, WindowSlot[] itemReferences) {
+        inv.setItem(index, itemReferences[index].getGUIItem().getDisplayItem());
     }
     //end
 
     //checks for out of bound Connection
     @Override
-    public Connected adopted(Connected parent) {
-        checkForBound(parent);
-        return super.adopted(parent);
+    public Pane adopted(Connected<PaneItemCluster> parent) {
+        checkForBound((Pane) parent);
+        return (Pane) super.adopted(parent);
+    }
+
+    public static class InvalidSizeException extends IllegalStateException {
+        public InvalidSizeException(Pane descendant, Pane holder) {
+            super("Pane \"" + descendant.name() + "\"" + " require " +
+                    descendant.width() + "x" + descendant.height() +
+                    " slots, but Pane's parent \"" + holder.name + "\"" +
+                    " only have " + holder.height + "x" + holder.width + " slots" +
+                    " \n\t\t\"No!~ It won't fit ahhHHHouyhnhnm~\""
+            );
+        }
+        public InvalidSizeException(Pane pane, Pattern.DefinedPattern pattern) {
+            super("Pattern size isn't the same as pane " + pane.name() + "! " +
+                    pattern.width() + "x" + pattern.height() + " isn't " +
+                    pane.width() + "x" + pane.height()
+            );
+        }
     }
 }
