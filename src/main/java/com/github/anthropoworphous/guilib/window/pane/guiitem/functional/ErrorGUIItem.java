@@ -1,4 +1,4 @@
-package com.github.anthropoworphous.guilib.window.pane.guiitem.other;
+package com.github.anthropoworphous.guilib.window.pane.guiitem.functional;
 
 import com.github.anthropoworphous.guilib.window.Window;
 import com.github.anthropoworphous.guilib.window.WindowSlot;

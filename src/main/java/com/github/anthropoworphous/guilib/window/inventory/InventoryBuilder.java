@@ -1,5 +1,6 @@
 package com.github.anthropoworphous.guilib.window.inventory;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -41,13 +42,23 @@ public class InventoryBuilder {
     private InventoryType invType = InventoryType.CHEST;
     private int size = 27;
 
-    public Inventory getInventory() {
-        return invType == InventoryType.CHEST ?
-                Bukkit.getServer().createInventory(null, size) :
-                Bukkit.getServer().createInventory(null, invType);
+    public Inventory getInventory(Component component) {
+        if (invType == InventoryType.CHEST) {
+            if (component == null) {
+                return Bukkit.getServer().createInventory(null, size);
+            } else {
+                return Bukkit.getServer().createInventory(null, size, component);
+            }
+        } else {
+            if (component == null) {
+                return Bukkit.getServer().createInventory(null, invType);
+            } else {
+                return Bukkit.getServer().createInventory(null, invType, component);
+            }
+        }
     }
     public int getWidth() {
-        return switch (getInventory().getType()) {
+        return switch (invType) {
             case CHEST, PLAYER, ENDER_CHEST, SHULKER_BOX, BARREL -> 9;
             case HOPPER -> 5;
             case DISPENSER, WORKBENCH, DROPPER -> 3;
@@ -56,8 +67,8 @@ public class InventoryBuilder {
         };
     }
     public int getHeight() {
-        return switch (getInventory().getType()) {
-            case CHEST -> getInventory().getSize() / 9;
+        return switch (invType) {
+            case CHEST -> size / 9;
             case PLAYER, ENDER_CHEST, SHULKER_BOX, BARREL, DISPENSER, WORKBENCH, DROPPER -> 3;
             case CRAFTING -> 2;
             case HOPPER -> 1;

@@ -29,7 +29,9 @@ public class PaneItemCluster {
     //end
 
     private void populatePages(int targetPage) {
-
+        for (int gap = content.size() - targetPage; gap <= 0; gap++) {
+            content.add(new GUIItem[size]);
+        }
     }
 
     public GUIItem[] get(int pageNumber) {

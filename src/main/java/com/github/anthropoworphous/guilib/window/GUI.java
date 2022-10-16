@@ -2,6 +2,7 @@ package com.github.anthropoworphous.guilib.window;
 
 import com.github.anthropoworphous.guilib.window.inventory.InventoryBuilder;
 import com.github.anthropoworphous.guilib.window.pane.Pane;
+import net.kyori.adventure.text.Component;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -15,26 +16,37 @@ import java.util.Map;
  * the show() method create new Window
  */
 public class GUI implements Listener {
-    public GUI(@NotNull InventoryBuilder builder, Pane mainPane, String name) {
-        this.builder = builder;
-        this.mainPane = new Pane(0, builder.getWidth(), builder.getHeight(), "ROOT_PANE");
-        this.mainPane.adopt(mainPane);
-        this.name = name;
+    public GUI(@NotNull InventoryBuilder builder) {
+        this(builder, (Component) null);
+    }
+    public GUI(@NotNull InventoryBuilder builder, Pane mainPane) {
+        this(builder, mainPane, (Component) null);
     }
     public GUI(@NotNull InventoryBuilder builder, String name) {
+        this(builder, Component.text(name));
+    }
+    public GUI(@NotNull InventoryBuilder builder, Pane mainPane, String name) {
+        this(builder, name);
+        this.rootPane.adopt(mainPane);
+    }
+    public GUI(@NotNull InventoryBuilder builder, Component name) {
         this.builder = builder;
-        this.mainPane = new Pane(0, builder.getWidth(), builder.getHeight(), "ROOT_PANE");
+        this.rootPane = new Pane(0, builder.getWidth(), builder.getHeight(), "ROOT_PANE");
         this.name = name;
+    }
+    public GUI(@NotNull InventoryBuilder builder, Pane mainPane, Component name) {
+        this(builder, name);
+        this.rootPane.adopt(mainPane);
     }
 
     private final InventoryBuilder builder;
-    private final Pane mainPane;
-    private final String name;
+    private final Pane rootPane;
+    private final Component name;
 
     private static final Map<Inventory, Window> activeWindow = new HashMap<>();
 
-    @NotNull public String getName() { return name; }
-    @NotNull public Pane getMainPane() { return mainPane; }
+    @NotNull public Component getName() { return name; }
+    @NotNull public Pane getMainPane() { return rootPane; }
     @NotNull public InventoryBuilder getInventoryBuilder() { return builder; }
 
     /**
@@ -42,8 +54,8 @@ public class GUI implements Listener {
      * @param mainPane This isn't the actual main pane, the main pane is generated when the Pane is created
      */
     public void setMainPane(@NotNull Pane mainPane) {
-        this.mainPane.descent().ifPresent(descendants -> descendants.forEach(this.mainPane::disown));
-        this.mainPane.adopt(mainPane);
+        this.rootPane.descent().ifPresent(descendants -> descendants.forEach(this.rootPane::disown));
+        this.rootPane.adopt(mainPane);
     }
 
     @NotNull protected static Map<Inventory, Window> getActiveWindows() {

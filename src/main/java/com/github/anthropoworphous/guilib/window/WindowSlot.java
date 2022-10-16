@@ -7,7 +7,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public record WindowSlot(LinkedList<StackedItem> stack) {
+    public WindowSlot() {
+        this(new LinkedList<>());
+    }
+
     public IGUIItem getGUIItem() {
+        // getLast because we stack from the root (which is the bottom layer)
         return stack.getLast().item();
     }
 
@@ -17,13 +22,22 @@ public record WindowSlot(LinkedList<StackedItem> stack) {
         ) {
             throw new OverlappingItemsException(producer.name());
         }
-        // addFirst because we stack from the descendants
-        stack.addFirst(new StackedItem(guiItem, producer));
+        stack.add(new StackedItem(guiItem, producer));
+    }
+    public void stack(@NotNull WindowSlot slot) throws OverlappingItemsException {
+        for (StackedItem item : slot.stack()) {
+            if (!item.producer().isOrphan() &&
+                    stack.stream().anyMatch(i -> i.producer().ascent().equals(item.producer().ascent()))
+            ) {
+                throw new OverlappingItemsException(item.producer().name());
+            }
+        }
+        stack.addAll(slot.stack());
     }
 
     public Pane topPane() { return stack.getLast().producer; }
 
-    private record StackedItem(IGUIItem item, Pane producer) {};
+    public record StackedItem(IGUIItem item, Pane producer) {};
 
     public static class OverlappingItemsException extends IllegalStateException {
         public OverlappingItemsException(String parentPaneName) {

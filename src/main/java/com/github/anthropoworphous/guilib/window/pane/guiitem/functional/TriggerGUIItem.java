@@ -1,12 +1,12 @@
-package com.github.anthropoworphous.guilib.window.pane.guiitem.other;
+package com.github.anthropoworphous.guilib.window.pane.guiitem.functional;
 
-import com.github.anthropoworphous.guilib.GUILib;
 import com.github.anthropoworphous.guilib.window.Window;
 import com.github.anthropoworphous.guilib.window.WindowSlot;
 import com.github.anthropoworphous.guilib.window.pane.Pane;
 import com.github.anthropoworphous.guilib.window.pane.guiitem.GUIItem;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class TriggerGUIItem extends GUIItem {
@@ -17,17 +17,37 @@ public class TriggerGUIItem extends GUIItem {
      * @param coolDown ticks for the button to be clickable again
      * @param execute thing to run
      */
-    public TriggerGUIItem(ItemStack baseItem, ItemStack reactItem, int coolDown, Runnable execute) {
+    public TriggerGUIItem(
+            ItemStack baseItem,
+            ItemStack reactItem,
+            int coolDown,
+            Runnable execute,
+            Plugin plugin)
+    {
         super(baseItem);
         this.reactItem = reactItem;
         this.coolDown = coolDown;
         this.execute = execute;
+        this.plugin = plugin;
     }
 
     private final int coolDown;
     private final ItemStack reactItem;
     private final Runnable execute;
+    private final Plugin plugin;
     private boolean clicked = false;
+
+
+    @Override
+    public GUIItem copy() {
+        return new TriggerGUIItem(
+                item() == null ? null : item().clone(),
+                reactItem == null? null : reactItem.clone(),
+                coolDown,
+                execute,
+                plugin
+        );
+    }
 
     @Override
     public ItemStack getDisplayItem() {
@@ -49,6 +69,6 @@ public class TriggerGUIItem extends GUIItem {
                 clicked = false;
                 clickedWindow.refresh(event.getSlot());
             }
-        }.runTaskLater(GUILib.getPlugin(), coolDown);
+        }.runTaskLater(plugin, coolDown);
     }
 }

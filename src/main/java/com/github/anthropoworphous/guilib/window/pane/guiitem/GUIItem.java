@@ -33,11 +33,7 @@ public class GUIItem implements IGUIItem {
     }
 
     public GUIItem copy() {
-        GUIItem guiItem = new GUIItem(null);
-        if (item != null) {
-            guiItem.item = item.clone();
-        }
-        return guiItem;
+        return new GUIItem(item == null ? null : item.clone());
     }
 
     @Override

@@ -8,7 +8,7 @@ import org.bukkit.inventory.Inventory;
 public class Window {
     public Window(GUI gui) {
         this.gui = gui;
-        inv = gui.getInventoryBuilder().getInventory();
+        inv = gui.getInventoryBuilder().getInventory(gui.getName());
         content = gui.getMainPane().draw(this);
     }
 
